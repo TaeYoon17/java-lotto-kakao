@@ -75,12 +75,12 @@
 
 ## 작업 진행 계획
 
-##### Step1 PR 리뷰 개선 [ ]
-1. enum values 도입 [ ]
-2. WinLevel 타입 lint 적용 [ ]
-3. WinLevel 타입 메서드 네이밍 개선 [ ]
-4. 사용하지 않는 메서드 (Ticket > toLottoNumbers) 제거
-5. Ticket stream 메서드 적용
+##### Step1 PR 리뷰 개선 [✅]
+1. enum values 도입 [✅]
+2. WinLevel 타입 lint 적용 [✅]
+3. WinLevel 타입 메서드 네이밍 개선 [✅]
+4. 사용하지 않는 메서드 (Ticket > toLottoNumbers) 제거 [✅]
+5. Ticket stream 메서드 적용 [✅]
 
 ##### 수동 추첨번호 비즈니스 레이어 개선 [ ]
 1. TicketBooth 자동 추첨기 모델 분리 및 추첨기 인터페이스 생성 with TDD [ ]

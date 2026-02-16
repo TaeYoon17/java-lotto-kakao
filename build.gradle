@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'com.diffplug.spotless' version '6.25.0'
 }
 
 version '1.0-SNAPSHOT'
@@ -21,4 +22,14 @@ java {
 
 test {
     useJUnitPlatform()
+}
+
+spotless {
+    java {
+        target 'src/*/java/**/*.java'
+        googleJavaFormat()
+        removeUnusedImports()
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
 }
