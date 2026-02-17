@@ -1,4 +1,4 @@
-package model;
+package model.valueobjects;
 
 import java.util.Objects;
 

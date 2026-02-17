@@ -2,7 +2,7 @@ package view;
 
 import java.util.List;
 import java.util.Scanner;
-import model.Ticket;
+import model.entities.Ticket;
 
 public class TicketBoothView {
   private final Scanner scanner = new Scanner(System.in);

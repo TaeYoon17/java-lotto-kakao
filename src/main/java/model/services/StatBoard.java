@@ -1,4 +1,8 @@
-package model;
+package model.services;
+
+import model.valueobjects.LotteryWinningNumbers;
+import model.entities.Ticket;
+import model.valueobjects.WinLevel;
 
 import java.util.HashMap;
 import java.util.List;

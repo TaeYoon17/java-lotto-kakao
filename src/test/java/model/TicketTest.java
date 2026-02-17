@@ -4,7 +4,14 @@ import static org.assertj.core.api.AssertionsForClassTypes.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Stream;
+
+import model.entities.TicketVoucher;
+import model.valueobjects.LotteryWinningNumbers;
+import model.valueobjects.LottoNumber;
+import model.entities.Ticket;
+import model.valueobjects.WinLevel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -71,6 +78,6 @@ public class TicketTest {
     for (int number : numbers) {
       lottoNumberList.add(new LottoNumber(number));
     }
-    return new Ticket(lottoNumberList);
+    return new Ticket(new TicketVoucher(UUID.randomUUID(), 990),lottoNumberList);
   }
 }

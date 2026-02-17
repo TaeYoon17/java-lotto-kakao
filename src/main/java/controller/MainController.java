@@ -1,18 +1,18 @@
 package controller;
 
 import java.util.List;
-import model.LotteryWinningNumbers;
-import model.LottoNumber;
-import model.StatBoard;
-import model.Ticket;
-import model.TicketBooth;
-import model.WinLevel;
+import model.valueobjects.LotteryWinningNumbers;
+import model.valueobjects.LottoNumber;
+import model.services.StatBoard;
+import model.entities.Ticket;
+import model.services.TicketBooth;
+import model.valueobjects.WinLevel;
 import view.StatBoardView;
 import view.TicketBoothView;
 
 public class MainController {
   public static final int BALL_COUNT = 6;
-  private final TicketBooth ticketBooth = new TicketBooth();
+  private final TicketBooth ticketBooth = new TicketBooth(990);
   private final TicketBoothView ticketBoothView = new TicketBoothView();
   private final view.LotteryWinningNumbers lotteryWinningNumbers = new view.LotteryWinningNumbers();
   private final StatBoardView statBoardView = new StatBoardView();

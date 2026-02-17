@@ -82,10 +82,10 @@
 4. 사용하지 않는 메서드 (Ticket > toLottoNumbers) 제거 [✅]
 5. Ticket stream 메서드 적용 [✅]
 
-##### 수동 추첨번호 비즈니스 레이어 개선 [ ]
-1. TicketBooth 자동 추첨기 모델 분리 및 추첨기 인터페이스 생성 with TDD [ ]
-2. 수동 추첨기 with TDD [ ]
-3. TicketBooth - 자동 추첨기, 수동 추첨기 조합 적용 with TDD [ ]
+##### 수동 추첨번호 비즈니스 레이어 개선 [✅]
+1. TicketBooth 유저 지불 - 티켓 구매 바우처 분리 with TDD [✅]
+2. 수동 추첨 메서드, 자동 추첨 메서드 분리 [✅]
+3. TicketBooth - 리팩토링 [✅]
 
 #### 수동 추첨에 따른 컨트롤러 개선
 - 미정

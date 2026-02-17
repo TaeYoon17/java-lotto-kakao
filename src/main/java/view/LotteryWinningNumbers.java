@@ -3,7 +3,7 @@ package view;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import model.LottoNumber;
+import model.valueobjects.LottoNumber;
 
 public class LotteryWinningNumbers {
   private final Scanner scanner = new Scanner(System.in);

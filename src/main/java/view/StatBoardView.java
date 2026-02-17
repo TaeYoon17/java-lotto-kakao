@@ -1,6 +1,6 @@
 package view;
 
-import model.WinLevel;
+import model.valueobjects.WinLevel;
 
 public class StatBoardView {
   public void showStatResult() {

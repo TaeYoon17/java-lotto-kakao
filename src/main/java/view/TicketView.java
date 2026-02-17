@@ -1,7 +1,7 @@
 package view;
 
-import model.LottoNumber;
-import model.Ticket;
+import model.valueobjects.LottoNumber;
+import model.entities.Ticket;
 
 public class TicketView {
   private final Ticket ticket;

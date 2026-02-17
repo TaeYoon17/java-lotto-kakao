@@ -1,4 +1,8 @@
-package model;
+package model.entities;
+
+import model.valueobjects.LotteryWinningNumbers;
+import model.valueobjects.LottoNumber;
+import model.valueobjects.WinLevel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,11 +14,14 @@ public class Ticket {
 
   private final List<LottoNumber> numbers;
 
-  public Ticket(LottoNumber... numbers) {
-    this(new ArrayList<>(Arrays.asList(numbers)));
+  private final TicketVoucher ticketVoucher;
+
+  public Ticket(TicketVoucher ticketVoucher, LottoNumber... numbers) {
+    this(ticketVoucher, new ArrayList<>(Arrays.asList(numbers)));
   }
 
-  public Ticket(List<LottoNumber> numbers) {
+  public Ticket(TicketVoucher ticketVoucher,List<LottoNumber> numbers) {
+    this.ticketVoucher = ticketVoucher;
     this.numbers = new ArrayList<>(numbers).stream().sorted().toList();
   }
 
@@ -33,5 +40,8 @@ public class Ticket {
 
   public List<LottoNumber> getNumbers() {
     return numbers;
+  }
+  public TicketVoucher getTicketVoucher() {
+    return ticketVoucher;
   }
 }
