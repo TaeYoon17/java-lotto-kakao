@@ -3,6 +3,7 @@ package model.services;
 import model.entities.Ticket;
 import model.entities.TicketVoucher;
 import model.valueobjects.LottoNumber;
+import model.valueobjects.TicketVoucherBundle;
 
 import java.util.*;
 
@@ -28,6 +29,15 @@ public class TicketBooth {
       issuedTicketVouchers.add(ticketVoucher);
     }
     return result;
+  }
+
+  public TicketVoucherBundle splitTicketVouchers(List<TicketVoucher> ticketVouchers, int manualTicketCount) {
+    validateManualTicketCount(ticketVouchers.size(), manualTicketCount);
+    int splitIndex = ticketVouchers.size() - manualTicketCount;
+    List<TicketVoucher> autoVouchers = new ArrayList<>(ticketVouchers.subList(0, splitIndex));
+    List<TicketVoucher> manualVouchers =
+        new ArrayList<>(ticketVouchers.subList(splitIndex, ticketVouchers.size()));
+    return new TicketVoucherBundle(manualVouchers, autoVouchers);
   }
 
 
@@ -97,6 +107,15 @@ public class TicketBooth {
     }
     if (price % TICKET_PRICE != 0) {
       throw new IllegalArgumentException(TICKET_PRICE + "원 단위의 입력이 아니다!");
+    }
+  }
+
+  private void validateManualTicketCount(int totalTicketCount, int manualTicketCount) {
+    if (manualTicketCount < 0) {
+      throw new IllegalArgumentException("수동 구매 수량은 음수일 수 없습니다.");
+    }
+    if (manualTicketCount > totalTicketCount) {
+      throw new IllegalArgumentException("수동 구매 수량이 총 구매 수량을 초과할 수 없습니다.");
     }
   }
 }

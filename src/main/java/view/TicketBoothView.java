@@ -5,9 +5,13 @@ import java.util.List;
 import java.util.Scanner;
 import model.entities.Ticket;
 import model.valueobjects.LottoNumber;
+import view.components.LottoNumbersInputView;
+import view.components.NumberInputView;
 
 public class TicketBoothView {
   private final Scanner scanner = new Scanner(System.in);
+  private final NumberInputView numberInputView = new NumberInputView();
+  private final LottoNumbersInputView lottoNumbersInputView = new LottoNumbersInputView();
 
   public void showInputPriceMessage() {
     System.out.println("구입금액을 입력해 주세요.");
@@ -26,34 +30,13 @@ public class TicketBoothView {
   }
 
   public Integer inputManualTicketCount() {
-    String input = scanner.nextLine();
-    try {
-      return Integer.parseInt(input);
-    } catch (Exception e) {
-      throw new IllegalArgumentException("숫자만 입력해주세요.");
-    }
+    return numberInputView.render();
   }
 
   public List<List<LottoNumber>> inputManualTicketNumbers(int ticketCount, int ballCount) {
     List<List<LottoNumber>> result = new ArrayList<>();
     for (int i = 0; i < ticketCount; i++) {
-      result.add(inputLottoNumber(ballCount));
-    }
-    return result;
-  }
-
-  public List<LottoNumber> inputLottoNumber(Integer ballCount) {
-    String rawNumbers = scanner.nextLine();
-    if (!rawNumbers.matches("^[0-9][0-9, ]*$")) {
-      throw new IllegalArgumentException("숫자와 ','만 입력 가능합니다.");
-    }
-    List<LottoNumber> result = new ArrayList<>();
-    for (String rawNumber : rawNumbers.split(",")) {
-      int number = Integer.parseInt(rawNumber.trim());
-      result.add(new LottoNumber(number));
-    }
-    if (result.size() != ballCount) {
-      throw new IllegalArgumentException("숫자 6개를 입력해주세요.");
+      result.add(lottoNumbersInputView.render(ballCount));
     }
     return result;
   }
@@ -66,12 +49,7 @@ public class TicketBoothView {
   }
 
   public Integer inputTicketPrice() {
-    String input = scanner.nextLine();
-    try {
-      return Integer.parseInt(input);
-    } catch (Exception e) {
-      throw new IllegalArgumentException("숫자만 입력해주세요.");
-    }
+    return numberInputView.render();
   }
 
   public void showErrorMessage(IllegalArgumentException e) {

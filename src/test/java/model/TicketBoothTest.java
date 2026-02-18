@@ -11,6 +11,7 @@ import model.entities.Ticket;
 import model.entities.TicketVoucher;
 import model.services.TicketBooth;
 import model.valueobjects.LottoNumber;
+import model.valueobjects.TicketVoucherBundle;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -78,5 +79,19 @@ public class TicketBoothTest {
     for(Ticket ticket: sut) {
       assertThat(ticketVouchers.contains(ticket.getTicketVoucher())).isEqualTo(true);
     }
+  }
+
+  @Test
+  void splitTicketVouchers_manualAndAutoCountMatched() {
+    TicketVoucherBundle result = ticketBooth.splitTicketVouchers(ticketVouchers, 2);
+
+    assertThat(result.getManualVouchers().size()).isEqualTo(2);
+    assertThat(result.getAutoVouchers().size()).isEqualTo(1);
+  }
+
+  @Test
+  void splitTicketVouchers_manualCountExceedThenFailed() {
+    assertThatThrownBy(() -> ticketBooth.splitTicketVouchers(ticketVouchers, 4))
+        .isInstanceOf(IllegalArgumentException.class);
   }
 }
