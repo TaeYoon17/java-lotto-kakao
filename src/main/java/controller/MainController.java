@@ -9,6 +9,7 @@ import model.services.StatBoard;
 import model.entities.Ticket;
 import model.services.TicketBooth;
 import model.valueobjects.WinLevel;
+import view.LotteryWinningNumbersView;
 import view.StatBoardView;
 import view.TicketBoothView;
 
@@ -17,7 +18,7 @@ public class MainController {
   private final int ticketValidateCode = 990;
   private final TicketBooth ticketBooth = new TicketBooth(ticketValidateCode);
   private final TicketBoothView ticketBoothView = new TicketBoothView();
-  private final view.LotteryWinningNumbers lotteryWinningNumbers = new view.LotteryWinningNumbers();
+  private final LotteryWinningNumbersView lotteryWinningNumbersView = new LotteryWinningNumbersView();
   private final StatBoardView statBoardView = new StatBoardView();
 
   Scanner scanner = new Scanner(System.in);
@@ -27,43 +28,36 @@ public class MainController {
 
   private void ticketBoothRender() {
     try {
-
       ticketBoothView.showInputPriceMessage();
       Integer price = ticketBoothView.inputTicketPrice();
       // 1. 구매 금액 입력 후 `issueTicketVouchers` 기반으로 발급 흐름 전환
       List<TicketVoucher> ticketVouchers = ticketBooth.issueTicketVouchers(price);
       // 2. 수동 구매 수량 입력 및 총 구매 수량 초과 검증
-      System.out.println("수동으로 구매할 로또 수를 입력해주세요.");
-      int manualLottoTicketCount = Integer.parseInt(scanner.nextLine().trim());
-      int size = ticketVouchers.size();
-      int startIndex = Math.max(0, size - manualLottoTicketCount);
-      List<TicketVoucher> manualVouchers = new ArrayList<>(ticketVouchers.subList(startIndex, size));
-      ticketVouchers.subList(startIndex, size).clear();
-      // 3. 수동 수량만큼 번호 입력 루프 구성 후 `issueManualTickets` 호출
-      System.out.println("수동으로 구매할 번호를 입력해 주세요.");
-      List<List<LottoNumber>> lottoNumbers = new ArrayList<>();
-      for (int i = 0; i < manualLottoTicketCount; i++) {
-        String line = scanner.nextLine().trim();
-        if (line.isEmpty()) {
-          throw new IllegalArgumentException("수동 번호 입력이 비어 있습니다.");
-        }
-        List<LottoNumber> lottoNumber = Arrays.stream(line.split(","))
-                .map(String::trim)
-                .map(Integer::parseInt)
-                .map(LottoNumber::new)
-                .toList();
-        lottoNumbers.add(lottoNumber);
+      ticketBoothView.showInputManualTicketCount();
+      int totalVoucherCount = ticketVouchers.size();
+      int manualTicketCount = ticketBoothView.inputManualTicketCount();
+
+      if(totalVoucherCount < manualTicketCount) {
+        throw new IllegalArgumentException("유저 티켓의 갯수가 더 넘칠 수 없습니다!!");
       }
 
-      List<Ticket> manualTickets = ticketBooth.issueManualTickets(manualVouchers, lottoNumbers);
+      int startIndex = Math.max(0, totalVoucherCount - manualTicketCount);
+      List<TicketVoucher> manualVouchers = new ArrayList<>(ticketVouchers.subList(startIndex, totalVoucherCount));
+      List<TicketVoucher> autoVouchers = new ArrayList<>(ticketVouchers.subList(0, startIndex));
+      // 3. 수동 수량만큼 번호 입력 루프 구성 후 `issueManualTickets` 호출
+      ticketBoothView.showInputManualTicketNumbers();
+      List<List<LottoNumber>> manualTicketNumbers = ticketBoothView.inputManualTicketNumbers(manualTicketCount, BALL_COUNT);
 
       // 4. 자동 수량(`총 수량 - 수동 수량`) 계산 후 `issueAutoTickets` 호출
-      System.out.printf("수동으로 %d장, 자동으로 %d개를 구매했습니다.\n",manualTickets.size(), size - manualTickets.size());
-      List<Ticket> autoTickets = ticketBooth.issueAutoTickets(ticketVouchers);
+      // 모델 핵심 API 통신
+      List<Ticket> manualTickets = ticketBooth.issueManualTickets(manualVouchers, manualTicketNumbers);
+      List<Ticket> autoTickets = ticketBooth.issueAutoTickets(autoVouchers);
+      ticketBoothView.showTicketPurchaseResult(manualTickets, autoTickets);
 
       // 5. 수동/자동 티켓 병합 후 기존 통계 흐름 (gameScoreRenderer) 연결
-      autoTickets.addAll(manualTickets);
-      gameScoreRender(autoTickets);
+      List<Ticket> result = new ArrayList<>(manualTickets);
+      result.addAll(autoTickets);
+      gameScoreRender(result);
 
     } catch (IllegalArgumentException e) {
       ticketBoothView.showErrorMessage(e);
@@ -73,13 +67,13 @@ public class MainController {
 
   private void gameScoreRender(List<Ticket> tickets) {
     try {
-      lotteryWinningNumbers.showInputWinNumberMessage();
-      List<LottoNumber> winNumbers = lotteryWinningNumbers.inputWinNumber(BALL_COUNT);
-      lotteryWinningNumbers.showInputBonusBall();
-      LottoNumber bonusBall = lotteryWinningNumbers.inputBonusBall();
+      lotteryWinningNumbersView.showInputWinNumberMessage();
+      List<LottoNumber> winNumbers = lotteryWinningNumbersView.inputWinNumber(BALL_COUNT);
+      lotteryWinningNumbersView.showInputBonusBall();
+      LottoNumber bonusBall = lotteryWinningNumbersView.inputBonusBall();
       statBoardRender(new LotteryWinningNumbers(bonusBall, winNumbers), tickets);
     } catch (IllegalArgumentException e) {
-      lotteryWinningNumbers.showErrorMessage(e);
+      lotteryWinningNumbersView.showErrorMessage(e);
       gameScoreRender(tickets);
     }
   }

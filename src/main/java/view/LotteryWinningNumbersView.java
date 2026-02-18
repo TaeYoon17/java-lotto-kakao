@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Scanner;
 import model.valueobjects.LottoNumber;
 
-public class LotteryWinningNumbers {
+public class LotteryWinningNumbersView {
   private final Scanner scanner = new Scanner(System.in);
 
   public void showInputWinNumberMessage() {
