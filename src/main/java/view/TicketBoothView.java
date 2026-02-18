@@ -30,7 +30,7 @@ public class TicketBoothView {
     try {
       return Integer.parseInt(input);
     } catch (Exception e) {
-      throw new IllegalArgumentException("잘 못 된 입력");
+      throw new IllegalArgumentException("숫자만 입력해주세요.");
     }
   }
 
@@ -70,7 +70,7 @@ public class TicketBoothView {
     try {
       return Integer.parseInt(input);
     } catch (Exception e) {
-      throw new IllegalArgumentException("잘 못 된 입력");
+      throw new IllegalArgumentException("숫자만 입력해주세요.");
     }
   }
 
