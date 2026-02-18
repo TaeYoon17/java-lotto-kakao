@@ -26,22 +26,7 @@ public class TicketBoothTest {
     ticketVouchers = ticketBooth.issueTicketVouchers(3000);
   }
 
-  @Test
-  void ticketBoothValidatorThrow() {
-    TicketBooth ticketBooth = new TicketBooth(990);
-    Integer[] prices = new Integer[] {1050, -123142341, 0};
-    for (Integer price : prices) {
-      assertThatThrownBy(() -> ticketBooth.issueTickets(price))
-          .isInstanceOf(IllegalArgumentException.class);
-    }
-  }
 
-  @Test
-  void ticketBoothIssue() {
-    TicketBooth ticketBooth = new TicketBooth(990);
-    List<Ticket> tickets = ticketBooth.issueTickets(12000);
-    assertThat(tickets.size()).isEqualTo(12);
-  }
 
   @Test
   void ticketVoucher() {

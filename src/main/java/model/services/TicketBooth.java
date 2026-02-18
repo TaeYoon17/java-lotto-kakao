@@ -87,16 +87,6 @@ public class TicketBooth {
     throw new IllegalArgumentException("리팩토링 대상, 랜덤 티켓 발행과 수동 티켓 발행 메서드 구분하기");
   }
 
-  public List<Ticket> issueTickets(int price) {
-    issueTicketVouchersValidation(price);
-    int ticketCount = price / TICKET_PRICE;
-    List<Ticket> result = new ArrayList<>();
-    while (result.size() < ticketCount) {
-      Ticket ticket = issueTicket();
-      result.add(ticket);
-    }
-    return result;
-  }
 
   private void issueTicketVouchersValidation(int price) {
     if (price < 0) {

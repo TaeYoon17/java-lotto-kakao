@@ -1,6 +1,8 @@
 package controller;
 
-import java.util.List;
+import java.util.*;
+
+import model.entities.TicketVoucher;
 import model.valueobjects.LotteryWinningNumbers;
 import model.valueobjects.LottoNumber;
 import model.services.StatBoard;
@@ -12,22 +14,57 @@ import view.TicketBoothView;
 
 public class MainController {
   public static final int BALL_COUNT = 6;
-  private final TicketBooth ticketBooth = new TicketBooth(990);
+  private final int ticketValidateCode = 990;
+  private final TicketBooth ticketBooth = new TicketBooth(ticketValidateCode);
   private final TicketBoothView ticketBoothView = new TicketBoothView();
   private final view.LotteryWinningNumbers lotteryWinningNumbers = new view.LotteryWinningNumbers();
   private final StatBoardView statBoardView = new StatBoardView();
 
+  Scanner scanner = new Scanner(System.in);
   public void render() {
     ticketBoothRender();
   }
 
   private void ticketBoothRender() {
     try {
+
       ticketBoothView.showInputPriceMessage();
       Integer price = ticketBoothView.inputTicketPrice();
-      List<Ticket> tickets = ticketBooth.issueTickets(price);
-      ticketBoothView.showTicketInfo(tickets);
-      gameScoreRender(tickets);
+      // 1. 구매 금액 입력 후 `issueTicketVouchers` 기반으로 발급 흐름 전환
+      List<TicketVoucher> ticketVouchers = ticketBooth.issueTicketVouchers(price);
+      // 2. 수동 구매 수량 입력 및 총 구매 수량 초과 검증
+      System.out.println("수동으로 구매할 로또 수를 입력해주세요.");
+      int manualLottoTicketCount = Integer.parseInt(scanner.nextLine().trim());
+      int size = ticketVouchers.size();
+      int startIndex = Math.max(0, size - manualLottoTicketCount);
+      List<TicketVoucher> manualVouchers = new ArrayList<>(ticketVouchers.subList(startIndex, size));
+      ticketVouchers.subList(startIndex, size).clear();
+      // 3. 수동 수량만큼 번호 입력 루프 구성 후 `issueManualTickets` 호출
+      System.out.println("수동으로 구매할 번호를 입력해 주세요.");
+      List<List<LottoNumber>> lottoNumbers = new ArrayList<>();
+      for (int i = 0; i < manualLottoTicketCount; i++) {
+        String line = scanner.nextLine().trim();
+        if (line.isEmpty()) {
+          throw new IllegalArgumentException("수동 번호 입력이 비어 있습니다.");
+        }
+        List<LottoNumber> lottoNumber = Arrays.stream(line.split(","))
+                .map(String::trim)
+                .map(Integer::parseInt)
+                .map(LottoNumber::new)
+                .toList();
+        lottoNumbers.add(lottoNumber);
+      }
+
+      List<Ticket> manualTickets = ticketBooth.issueManualTickets(manualVouchers, lottoNumbers);
+
+      // 4. 자동 수량(`총 수량 - 수동 수량`) 계산 후 `issueAutoTickets` 호출
+      System.out.printf("수동으로 %d장, 자동으로 %d개를 구매했습니다.\n",manualTickets.size(), size - manualTickets.size());
+      List<Ticket> autoTickets = ticketBooth.issueAutoTickets(ticketVouchers);
+
+      // 5. 수동/자동 티켓 병합 후 기존 통계 흐름 (gameScoreRenderer) 연결
+      autoTickets.addAll(manualTickets);
+      gameScoreRender(autoTickets);
+
     } catch (IllegalArgumentException e) {
       ticketBoothView.showErrorMessage(e);
       ticketBoothRender();
